@@ -11,10 +11,10 @@ export class AuthController {
   @Post('signup')
   //   Signup(@Req() req: Request) {
   Signup(@Body() dto: AuthDto) {
-    console.log({ dto });
     return this.authService.SignUp(dto);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('signin')
   Signin(@Body() dto: AuthDto) {
     return this.authService.Login(dto);

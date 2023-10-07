@@ -7,15 +7,17 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
+import { EmailQueueService } from '../email/email-queue.service';
 
 @Injectable({})
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private config: ConfigService,
-    private jwt: JwtService
+    private jwt: JwtService,
+    private emailQueueService: EmailQueueService
   ) {}
   async Login(dto: AuthDto) {
     const user = await this.prisma.user.findUnique({
@@ -51,8 +53,13 @@ export class AuthService {
           email: true,
         },
       });
+      this.emailQueueService
+        .sendWelcomeEmail(dto.email, 'esteemed user')
+        .catch((err) => console.log('bull error', err));
+
       return user;
     } catch (error) {
+      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new BadRequestException('email credentials taken');
