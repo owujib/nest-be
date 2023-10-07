@@ -12,10 +12,10 @@ import { EmailModule } from './email/email.module';
   imports: [
     BullModule.forRoot({
       redis: {
-        host: 'containers-us-west-86.railway.app', // Redis server host
-        port: 6794, // Redis server port
-        username: 'default',
-        password: '23KSSEZl9QiHYXU9kLhD',
+        // host: '', // Redis server host
+        // port: , // Redis server port
+        // username: '',
+        // password: '',
       },
     }),
     ConfigModule.forRoot({
